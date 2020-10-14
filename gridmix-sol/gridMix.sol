@@ -26,8 +26,8 @@ contract masterSLEC is IERC777Recipient {
      /** 
      * @dev Create a new instance of masterSLEC - to be used for creating energy markets.
      */
-    constructor (address _grid, address _token) public {
-
+    constructor () public {
+        
     }
 
      /** 
@@ -72,7 +72,7 @@ contract masterSLEC is IERC777Recipient {
         _;
     }
 
-    // SECTION: VARIABLE DEFINITIONS
+    // SECTION: STATE VARIABLES
     // the grid the governor
     address private grid;
     
@@ -113,14 +113,13 @@ contract masterSLEC is IERC777Recipient {
     }
     
     // a participant is a buyer or a seller of energy
-    // If it were to be used an a param an example would be: ["0x09154c5540caB11e2f5AAb284c6AB5415f96E26B", "true", "true", [2], [3], 0]
     struct participant {
         address participantID; // prosumer or consumer or both
         bool canBuy; // has permission to buy
         bool canSell;  // has permission to sell
         buySpecs buyerSpecs; // struct of specs of the equipment
         sellSpecs sellerSpecs; // struct of specs of the equipment
-        uint8 exists; // not sure this is needed
+        uint8 exists; // has been registered
     }
   
      // energyStream is for BOTH requesting and offering energy
@@ -149,9 +148,12 @@ contract masterSLEC is IERC777Recipient {
     mapping(address => energyStream[]) public buyEnergy_map;
     
     mapping(bytes => streamRef[]) public bids;
+    // when a bid has been accepted it goes into this mapping until the delivery of energy has been confirmed
     mapping(bytes => uint) public bids_acquired; // bytes is concatenation of seller - buyer - id offer - id ask
     
     mapping(bytes => bytes) public accepted;
+    // after delivery has been confirmed the sale is recorded here
+    // bytes is an encoding of offerRef, buyRef
     mapping(bytes => bool) public done;
     
     // the struct of the currentMarket
