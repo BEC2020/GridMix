@@ -1,8 +1,10 @@
-Get a Senario file?
-me: market is open, I am registered
-me: need to ask for energy me need to offer energy etc
+# This folder contains the solidity files associated with GridMix
 
+## gridmix.sol is the starter solidity file for transactive energy
+It contains 2 contracts - ENR for minting the token and masterSLEC
+Also of note is the gridmix_test.sol file with is the file for unit testing.
 
+### These instructions are soon to be updated
 Instructions for Deployment
 1. Compile & Deploy the token contract KWH on a testnet (not Remix's JSVM)
     * params:  eg: [],"0x05854cA140caB11e2f5AAb284c6AB5415f96E26B"
