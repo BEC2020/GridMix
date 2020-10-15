@@ -1,8 +1,9 @@
 # This folder contains the solidity files associated with GridMix
 
 ## gridmix.sol is the starter solidity file for transactive energy
-It contains 2 contracts - ENR for minting the token and masterSLEC
-Also of note is the gridmix_test.sol file with is the file for unit testing.
+It contains 2 contracts - ENR for minting the token and masterSLEC.
+
+Also of note in this directory is the file **gridmix_test.sol**  which is the file for unit testing.
 
 ### These instructions are soon to be updated
 Instructions for Deployment
