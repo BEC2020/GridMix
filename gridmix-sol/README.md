@@ -55,7 +55,6 @@ tuple(address,uint256)[]: matches 0x05854cA140caB11e2f5AAb284c6AB5415f96E26B,0
     - the seller's info is in the array that got returned above
     - the buyer's params are the id of the Ask and the price that you want to pay
 
- - 
 8. Funds are sent from the **send** function in the token's contract and are sent to the **SLEC contract** and are held there in escrow.
    - The amount sent by the consumer must match their bid's amount. 
    - If this is the 1st bid to this offer or if it is a subsquent bid then it should be the amount that the bid was increased over this consumer's previous bid. 
