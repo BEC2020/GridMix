@@ -39,7 +39,7 @@ contract masterSLEC is IERC777Recipient {
         address[] memory operators;
         token = IERC777(_token);
         grid = _grid;
-        // _erc1820.setInterfaceImplementer(address(this), TOKENS_RECIPIENT_INTERFACE_HASH, address(this));
+        _erc1820.setInterfaceImplementer(address(this), TOKENS_RECIPIENT_INTERFACE_HASH, address(this));
     }
 
     // SECTION: MODIFIERS 
