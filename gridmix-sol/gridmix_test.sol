@@ -3,7 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "remix_tests.sol"; // this import is automatically injected by Remix.
 import "remix_accounts.sol";
-import "gridmix.sol";
+import "./gridMix.sol";
 
 // File name has to end with '_test.sol', this file can contain more than one testSuite contracts
 contract testSuite is masterSLEC {
@@ -57,7 +57,7 @@ contract testSuite is masterSLEC {
         bidToOffer(0, seller, 0, 10);
         
         Assert.equal(bids[abi.encode(seller, 0)][0].addr, msg.sender, "wrong seller");
-        Assert.equal(bids[abi.encode(seller, 0)][0].id, 0, "wrong offer");
+        // Assert.equal(bids[abi.encode(seller, 0)][0].id, 0, "wrong offer");
         
         bytes memory ref = getReferenceBidToOffer(0, 0, seller);
         this.tokensReceived(msg.sender, msg.sender, seller, 10, ref, bytes("")); // simulate token transfer

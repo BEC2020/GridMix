@@ -39,7 +39,12 @@ contract masterSLEC is IERC777Recipient {
         address[] memory operators;
         token = IERC777(_token);
         grid = _grid;
-        _erc1820.setInterfaceImplementer(address(this), TOKENS_RECIPIENT_INTERFACE_HASH, address(this));
+        // this if statment is here for running the gridMix_test.sol file
+        // if this is not a test the erc1820.setInterfaceImplementer is set - 
+        // this sets the type of tokens that this contract can receive
+        if (_token != address(0)) {
+            _erc1820.setInterfaceImplementer(address(this), TOKENS_RECIPIENT_INTERFACE_HASH, address(this));    
+        }
     }
 
     // SECTION: MODIFIERS 
@@ -171,8 +176,8 @@ contract masterSLEC is IERC777Recipient {
      * @param from the buyer
      * @param to the seller
      * @param amount how much was received
-     * @param userData need more def
-     * @param operatorData need more def
+     * @param userData this is the info that contains the id of the offer, the id of the ask, and the seller's address - it is constructed by getReferenceBidToOffer
+     * @param operatorData in the contract is not used
      */
     function tokensReceived (
         address operator,
@@ -380,7 +385,7 @@ contract masterSLEC is IERC777Recipient {
         }
         
         // encode the seller's info & offer info to create an ID
-        bytes memory offerRef = abi.encodePacked(seller, idOffer);
+        bytes memory offerRef = abi.encode(seller, idOffer);
         streamRef memory b;
         b.addr = msg.sender;
         b.id = idAsk;
@@ -406,9 +411,9 @@ contract masterSLEC is IERC777Recipient {
      * @param idOffer the ID of the Offer stream
      * @return highestStream the streamRef of the highest bidder
      */
-    function acceptHighestBid (uint idOffer) isParticipant(msg.sender) marketIsClosed() public returns(streamRef memory highestStream) {
+      function acceptHighestBid (uint idOffer) isParticipant(msg.sender) marketIsClosed() public returns(streamRef memory highestStream) {
         // encode the seller's address & their id to get the offerRef
-        bytes memory offerRef = abi.encodePacked(msg.sender, idOffer);
+        bytes memory offerRef = abi.encode(msg.sender, idOffer);
         // make sure the bid exists, the offer has not yet been accepted and that delivery has not already started
         require(bids[offerRef].length != 0, "There is no bid");
         require(accepted[offerRef].length == 0, "a bid has already been accepted");
@@ -447,25 +452,6 @@ contract masterSLEC is IERC777Recipient {
             delete bids_acquired[bid_ref];
         }
     }
-
-   /**
-     * @dev After the market is closed, the DSO can sell to the remain consumers 
-     * @param sellerItems[] an array of streamRefs  
-     */
-    function buyFromRemainingSellers (streamRef[] memory sellerItems) marketIsClosed() public {
-        // require(msg.sender == grid, "only grid utility can call closeSurplus");
-        // require(block.timestamp < currentMarket.startDeliveryTimestamp, "delivery has already started");
-        // // TODO check if sellerItems are still opened
-        
-        // // the grid buy from the remaining sellers.
-        // uint id = 0;
-        // for (uint k = 0; k < sellerItems.length; k++) {
-        //     bytes memory gridRef = abi.encodePacked(grid, id);
-        //     bytes memory sellRef = abi.encodePacked(grid, sellerItems[k].addr, sellerItems[k].addr);
-        //     accepted[sellRef] = gridRef;
-        // }
-        // TODO money transfer goes offchain for the moment
-    }
     
     //SECTION: DELIVERY FULFILLED - TRANSACTION COMPLETED 
     /**
@@ -489,7 +475,28 @@ contract masterSLEC is IERC777Recipient {
         done[abi.encode(offerRef, buyRef)] = true;
     } 
 
-    //SECTION: CLEAN UP INVENTORY OF OFFERS & ASKS    
+    //SECTION: CLEAN UP INVENTORY OF OFFERS & ASKS  
+
+    /**
+     * @dev After the market is closed, the DSO can sell to the remain consumers 
+     * @param sellerItems[] an array of streamRefs  
+     */
+    function buyFromRemainingSellers (streamRef[] memory sellerItems) marketIsClosed() public {
+        // require(msg.sender == grid, "only grid utility can call closeSurplus");
+        // require(block.timestamp < currentMarket.startDeliveryTimestamp, "delivery has already started");
+        // // TODO check if sellerItems are still opened
+        
+        // // the grid buy from the remaining sellers.
+        // uint id = 0;
+        // for (uint k = 0; k < sellerItems.length; k++) {
+        //     bytes memory gridRef = abi.encodePacked(grid, id);
+        //     bytes memory sellRef = abi.encodePacked(grid, sellerItems[k].addr, sellerItems[k].addr);
+        //     accepted[sellRef] = gridRef;
+        // }
+        // TODO money transfer goes offchain for the moment
+    }
+
+
     /**
      * @dev After the market is closed, the DSO can buy the remain capacity 
      * @param buyerItems an array of streamRefs  
