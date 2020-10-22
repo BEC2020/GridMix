@@ -5,9 +5,8 @@ It contains 2 contracts - ENR for minting the token and masterSLEC.
 
 Also of note in this directory is the file **gridmix_test.sol**  which is the file for unit testing.
 
-### These instructions are soon to be updated
-Instructions for Deployment
-1. Compile & Deploy the token contract KWH on a testnet (not Remix's JSVM)
+###Instructions for Deployment
+1. Compile & Deploy the token contract ENR on a testnet (not Remix's JSVM)
     * params:  eg: [],"0x05854cA140caB11e2f5AAb284c6AB5415f96E26B"
 
 2. Deploy masterSLEC
